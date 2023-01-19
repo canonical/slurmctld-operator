@@ -1,4 +1,7 @@
-name: slurmdbd charm tests
+# Copyright 2023 Canonical Ltd.
+# Apache Software License, version 2.0
+
+name: slurmctld charm tests
 on:
   workflow_call:
   pull_request:
@@ -37,4 +40,23 @@ jobs:
       - name: Run tests
         run: tox -e unit
 
-# TODO: Add integration tests once they have been decided upon.
+  integration-test:
+    name: Integration tests (LXD)
+    runs-on: ubuntu-latest
+    needs:
+      - inclusive-naming-check
+      - lint
+      - unit-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: python3 -m pip install tox
+      - name: Setup operator environment
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          provider: lxd
+          # Juju channel should eventually be updated to 3.0/stable
+          juju-channel: 2.9/stable
+      - name: Run tests
+        run: tox -e integration
