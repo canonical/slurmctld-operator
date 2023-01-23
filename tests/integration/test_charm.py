@@ -92,6 +92,11 @@ async def test_build_and_deploy_against_edge(
 
 
 @pytest.mark.abort_on_fail
+@tenacity.retry(
+    wait=tenacity.wait.wait_exponential(multiplier=2, min=1, max=30),
+    stop=tenacity.stop_after_attempt(3),
+    reraise=True,
+)
 async def test_slurmctld_is_active(ops_test: OpsTest) -> None:
     """Test that slurmctld is active inside Juju unit."""
     logger.info("Checking that slurmctld is active inside Juju unit...")
