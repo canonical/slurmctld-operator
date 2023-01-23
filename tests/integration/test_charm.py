@@ -64,10 +64,18 @@ async def test_build_and_deploy_against_edge(
             series=series,
         ),
         ops_test.model.deploy(
-            SLURMDBD, application_name=SLURMDBD, channel="edge", num_units=1, series=series
+            SLURMDBD,
+            application_name=SLURMDBD,
+            channel="edge",
+            num_units=1,
+            series=series,
         ),
         ops_test.model.deploy(
-            DATABASE, application_name=DATABASE, channel="edge", num_units=1, series="bionic"
+            DATABASE,
+            application_name=DATABASE,
+            channel="edge",
+            num_units=1,
+            series="bionic",
         ),
     )
     # Attach resources to charms.
@@ -95,24 +103,23 @@ async def test_slurmctld_is_active(ops_test: OpsTest) -> None:
 @pytest.mark.abort_on_fail
 @tenacity.retry(
     wait=tenacity.wait.wait_exponential(multiplier=2, min=1, max=30),
-    stop=tenacity.stop_after_attempt(10),
+    stop=tenacity.stop_after_attempt(3),
     reraise=True,
 )
 async def test_slurmctld_port_listen(ops_test: OpsTest) -> None:
     """Test that slurmctld is listening on port 6817."""
     logger.info("Checking that slurmctld is listening on port 6817...")
     async with unit_connection(ops_test, SLURMCTLD, UNIT) as conn:
-        conn.exec_command("sudo apt-get -y install net-tools")
-        stdin, stdout, stderr = conn.exec_command("netstat -na | grep '0.0.0.0:6817'")
-        try:
-            assert "netstat: command not found" not in codecs.decode(stderr.read())
-        except AssertionError:
-            logger.error(f"netstat not found inside {UNIT}. Trying again...")
-        finally:
-            assert codecs.decode(stdout.read()).strip("\n").strip(" ")[-6:] == "LISTEN"
+        stdin, stdout, stderr = conn.exec_command("sudo lsof -i -n | grep ':6817'")
+        assert "LISTEN" in codecs.decode(stdout.read())
 
 
 @pytest.mark.abort_on_fail
+@tenacity.retry(
+    wait=tenacity.wait.wait_exponential(multiplier=2, min=1, max=30),
+    stop=tenacity.stop_after_attempt(3),
+    reraise=True,
+)
 async def test_etcd_is_active(ops_test: OpsTest) -> None:
     """Test that slurmctld is active inside Juju unit."""
     logger.info("Checking that etcd is active inside Juju unit...")
@@ -122,6 +129,11 @@ async def test_etcd_is_active(ops_test: OpsTest) -> None:
 
 
 @pytest.mark.abort_on_fail
+@tenacity.retry(
+    wait=tenacity.wait.wait_exponential(multiplier=2, min=1, max=30),
+    stop=tenacity.stop_after_attempt(3),
+    reraise=True,
+)
 async def test_munge_is_active(ops_test: OpsTest) -> None:
     """Test that slurmctld is active inside Juju unit."""
     logger.info("Checking that munge is active inside Juju unit...")
