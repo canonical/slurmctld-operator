@@ -35,14 +35,6 @@ ETCD = "etcd-v3.5.0-linux-amd64.tar.gz"
 ETCD_URL = f"https://github.com/etcd-io/etcd/releases/download/v3.5.0/{ETCD}"
 NHC = "lbnl-nhc-1.4.3.tar.gz"
 NHC_URL = f"https://github.com/mej/nhc/releases/download/1.4.3/{NHC}"
-SINGULARITY_DEB = "singularity-ce_3.10.2-focal_amd64.deb"
-SINGULARITY_DEB_URL = (
-    f"https://github.com/sylabs/singularity/releases/download/v3.10.2/{SINGULARITY_DEB}"
-)
-SINGULARITY_RPM = "singularity-ce-3.10.2-1.el7.x86_64.rpm"
-SINGULARITY_RPM_URL = (
-    f"https://github.com/sylabs/singularity/releases/download/v3.10.2/{SINGULARITY_RPM}"
-)
 VERSION = "version"
 VERSION_NUM = subprocess.run(
     shlex.split("git describe --always"), stdout=subprocess.PIPE, text=True
@@ -66,14 +58,8 @@ def get_slurmd_res() -> Dict[str, pathlib.Path]:
     if not (nhc := pathlib.Path(NHC)).exists():
         logger.info(f"Getting resource {NHC} from {NHC_URL}...")
         request.urlretrieve(NHC_URL, nhc)
-    if not (singularity_deb := pathlib.Path(SINGULARITY_DEB)).exists():
-        logger.info(f"Getting resource {SINGULARITY_DEB} from {SINGULARITY_DEB_URL}...")
-        request.urlretrieve(SINGULARITY_DEB_URL, singularity_deb)
-    if not (singularity_rpm := pathlib.Path(SINGULARITY_RPM)).exists():
-        logger.info(f"Getting resource {SINGULARITY_RPM} from {SINGULARITY_RPM_URL}...")
-        request.urlretrieve(SINGULARITY_RPM_URL, singularity_rpm)
 
-    return {"nhc": nhc, "singularity-deb": singularity_deb, "singularity-rpm": singularity_rpm}
+    return {"nhc": nhc}
 
 
 @contextlib.asynccontextmanager

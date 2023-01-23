@@ -20,7 +20,7 @@ import pathlib
 import pytest
 from pytest_operator.plugin import OpsTest
 
-from helpers import ETCD, NHC, SINGULARITY_DEB, SINGULARITY_RPM, VERSION
+from helpers import ETCD, NHC, VERSION
 
 
 @pytest.fixture(scope="module")
@@ -34,6 +34,4 @@ def pytest_sessionfinish(session, exitstatus) -> None:
     """Clean up repository after test session has completed."""
     pathlib.Path(ETCD).unlink(missing_ok=True)
     pathlib.Path(NHC).unlink(missing_ok=True)
-    pathlib.Path(SINGULARITY_DEB).unlink(missing_ok=True)
-    pathlib.Path(SINGULARITY_RPM).unlink(missing_ok=True)
     pathlib.Path(VERSION).unlink(missing_ok=True)

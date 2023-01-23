@@ -73,12 +73,6 @@ async def test_build_and_deploy_against_edge(
     # Attach resources to charms.
     await ops_test.juju("attach-resource", SLURMCTLD, f"etcd={slurmctld_res['etcd']}")
     await ops_test.juju("attach-resource", SLURMD, f"nhc={slurmd_res['nhc']}")
-    await ops_test.juju(
-        "attach-resource", SLURMD, f"singularity-deb={slurmd_res['singularity-deb']}"
-    )
-    await ops_test.juju(
-        "attach-resource", SLURMD, f"singularity-rpm={slurmd_res['singularity-rpm']}"
-    )
     # Set integrations for charmed applications.
     await ops_test.model.relate(f"{SLURMCTLD}:{SLURMD}", f"{SLURMD}:{SLURMD}")
     await ops_test.model.relate(f"{SLURMCTLD}:{SLURMDBD}", f"{SLURMDBD}:{SLURMDBD}")
