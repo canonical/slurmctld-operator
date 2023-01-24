@@ -15,7 +15,6 @@
 
 """Test slurmctld charm against other SLURM charms in the latest/edge channel."""
 
-import codecs
 import logging
 import pathlib
 from typing import Any, Coroutine
@@ -25,7 +24,7 @@ import pytest
 import tenacity
 from pytest_operator.plugin import OpsTest
 
-from helpers import get_slurmctld_res, get_slurmd_res, unit_connection
+from helpers import get_slurmctld_res, get_slurmd_res
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,6 @@ SLURMCTLD = "slurmctld"
 SLURMD = "slurmd"
 SLURMDBD = "slurmdbd"
 DATABASE = "percona-cluster"
-UNIT = f"{SLURMCTLD}/0"
 
 
 @pytest.mark.abort_on_fail
@@ -100,9 +98,9 @@ async def test_build_and_deploy_against_edge(
 async def test_slurmctld_is_active(ops_test: OpsTest) -> None:
     """Test that slurmctld is active inside Juju unit."""
     logger.info("Checking that slurmctld is active inside Juju unit...")
-    async with unit_connection(ops_test, SLURMCTLD, UNIT) as conn:
-        stdin, stdout, stderr = conn.exec_command("systemctl is-active slurmctld")
-        assert codecs.decode(stdout.read()).strip("\n") == "active"
+    slurmctld_unit = ops_test.model.applications[SLURMCTLD].units[0]
+    res = (await slurmctld_unit.ssh("systemctl is-active slurmctld")).strip("\n")
+    assert res == "active"
 
 
 @pytest.mark.abort_on_fail
@@ -114,9 +112,9 @@ async def test_slurmctld_is_active(ops_test: OpsTest) -> None:
 async def test_slurmctld_port_listen(ops_test: OpsTest) -> None:
     """Test that slurmctld is listening on port 6817."""
     logger.info("Checking that slurmctld is listening on port 6817...")
-    async with unit_connection(ops_test, SLURMCTLD, UNIT) as conn:
-        stdin, stdout, stderr = conn.exec_command("sudo lsof -i -n | grep ':6817'")
-        assert "LISTEN" in codecs.decode(stdout.read())
+    slurmctld_unit = ops_test.model.applications[SLURMCTLD].units[0]
+    res = await slurmctld_unit.ssh("sudo lsof -t -n -iTCP:6817 -sTCP:LISTEN")
+    assert res != ""
 
 
 @pytest.mark.abort_on_fail
@@ -126,11 +124,11 @@ async def test_slurmctld_port_listen(ops_test: OpsTest) -> None:
     reraise=True,
 )
 async def test_etcd_is_active(ops_test: OpsTest) -> None:
-    """Test that slurmctld is active inside Juju unit."""
+    """Test that etcd is active inside Juju unit."""
     logger.info("Checking that etcd is active inside Juju unit...")
-    async with unit_connection(ops_test, SLURMCTLD, UNIT) as conn:
-        stdin, stdout, stderr = conn.exec_command("systemctl is-active etcd")
-        assert codecs.decode(stdout.read()).strip("\n") == "active"
+    slurmctld_unit = ops_test.model.applications[SLURMCTLD].units[0]
+    res = (await slurmctld_unit.ssh("systemctl is-active etcd")).strip("\n")
+    assert res == "active"
 
 
 @pytest.mark.abort_on_fail
@@ -140,8 +138,8 @@ async def test_etcd_is_active(ops_test: OpsTest) -> None:
     reraise=True,
 )
 async def test_munge_is_active(ops_test: OpsTest) -> None:
-    """Test that slurmctld is active inside Juju unit."""
+    """Test that munge is active inside Juju unit."""
     logger.info("Checking that munge is active inside Juju unit...")
-    async with unit_connection(ops_test, SLURMCTLD, UNIT) as conn:
-        stdin, stdout, stderr = conn.exec_command("systemctl is-active munge")
-        assert codecs.decode(stdout.read()).strip("\n") == "active"
+    slurmctld_unit = ops_test.model.applications[SLURMCTLD].units[0]
+    res = (await slurmctld_unit.ssh("systemctl is-active munge")).strip("\n")
+    assert res == "active"
