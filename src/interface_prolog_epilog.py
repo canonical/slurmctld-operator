@@ -8,11 +8,11 @@ logger = logging.getLogger()
 
 
 class PrologEpilogAvailableEvent(EventBase):
-    """Emmited when the prolog and epilog are available."""
+    """Emitted when the prolog and epilog are available."""
 
 
 class PrologEpilogUnavailableEvent(EventBase):
-    """Emmited when the prolog and epilog are unavailable."""
+    """Emitted when the prolog and epilog are unavailable."""
 
 
 class SlurmPrologEpilogEvents(ObjectEvents):

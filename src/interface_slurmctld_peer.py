@@ -11,11 +11,11 @@ logger = logging.getLogger()
 
 
 class SlurmctldPeerAvailableEvent(EventBase):
-    """Emmited when a slurmctld peer is available."""
+    """Emitted when a slurmctld peer is available."""
 
 
 class SlurmctldPeerUnavailableEvent(EventBase):
-    """Emmited when the slurmctld peer departs the relation."""
+    """Emitted when the slurmctld peer departs the relation."""
 
 
 class SlurmctldPeerRelationEvents(ObjectEvents):

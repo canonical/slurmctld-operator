@@ -10,15 +10,15 @@ logger = logging.getLogger()
 
 
 class SlurmdAvailableEvent(EventBase):
-    """Emmited when slurmd is available."""
+    """Emitted when slurmd is available."""
 
 
 class SlurmdBrokenEvent(EventBase):
-    """Emmited when the slurmd relation is broken."""
+    """Emitted when the slurmd relation is broken."""
 
 
 class SlurmdDepartedEvent(EventBase):
-    """Emmited when one slurmd departs."""
+    """Emitted when one slurmd departs."""
 
 
 class SlurmdInventoryEvents(ObjectEvents):

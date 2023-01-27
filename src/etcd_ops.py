@@ -93,7 +93,7 @@ class EtcdOps:
         subprocess.call(["systemctl", "daemon-reload"])
 
     def _setup_environment_file(self):
-        logger.debug("## creating environemnt file for etcd")
+        logger.debug("## creating environment file for etcd")
         template_dir = Path(__file__).parent / "templates"
         environment = Environment(loader=FileSystemLoader(template_dir))
 

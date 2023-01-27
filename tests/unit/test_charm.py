@@ -220,7 +220,7 @@ class TestCharm(unittest.TestCase):
         self.harness.charm._slurmrestd.on.slurmrestd_available.emit()
         self.assertEqual(
             self.harness.charm.unit.status,
-            BlockedStatus("Cannot generate slurm_config - defering event."),
+            BlockedStatus("Cannot generate slurm_config - deferring event."),
         )
 
     @patch("charm.SlurmctldCharm._check_status", return_value=True)

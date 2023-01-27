@@ -336,7 +336,7 @@ class SlurmctldCharm(CharmBase):
     def _check_status(self):
         """Check for all relations and set appropriate status.
 
-        This charm needs these conditions to be satified in order to be ready:
+        This charm needs these conditions to be satisfied in order to be ready:
         - Slurm components installed.
         - Munge running.
         - slurmdbd node running.
@@ -392,7 +392,7 @@ class SlurmctldCharm(CharmBase):
             return False
 
         if len(waiting_on):
-            msg = f"Wating on: {','.join(waiting_on)}"
+            msg = f"Waiting on: {','.join(waiting_on)}"
             self.unit.status = WaitingStatus(msg)
             return False
 
@@ -478,7 +478,7 @@ class SlurmctldCharm(CharmBase):
         slurm_config = self._assemble_slurm_config()
 
         if not slurm_config:
-            self.unit.status = BlockedStatus("Cannot generate slurm_config - defering event.")
+            self.unit.status = BlockedStatus("Cannot generate slurm_config - deferring event.")
             event.defer()
             return
 
@@ -516,7 +516,7 @@ class SlurmctldCharm(CharmBase):
         logger.debug(f"## _on_write_slurm_config(): use_tls: {self._stored.use_tls}")
         logger.debug(f"## _on_write_slurm_config(): use_tls_ca: {self._stored.use_tls_ca}")
 
-        # TODO this will fire everytime a the configuration changed, we don't
+        # TODO this will fire every time a the configuration changed, we don't
         #      need that. This should happen only if the tls configs changed
         self._etcd.setup_tls()
 
@@ -535,7 +535,7 @@ class SlurmctldCharm(CharmBase):
             # send the custom NHC parameters to all slurmd
             self._slurmd.set_nhc_params(self.config.get("health-check-params"))
 
-            # check for "not new anymore" nodes, i.e., nodes that runned the
+            # check for "not new anymore" nodes, i.e., nodes that run the
             # node-configured action. Those nodes are not anymore in the
             # DownNodes section in the slurm.conf, but we need to resume them
             # manually and update the internal cache
@@ -588,7 +588,7 @@ class SlurmctldCharm(CharmBase):
         return configured_nodes
 
     def _resume_nodes(self, nodelist):
-        """Run scontrol to resume the speficied node list."""
+        """Run scontrol to resume the specified node list."""
         nodes = ",".join(nodelist)
         update_cmd = f"update nodename={nodes} state=resume"
         self._slurm_manager.slurm_cmd("scontrol", update_cmd)

@@ -10,11 +10,11 @@ logger = logging.getLogger()
 
 
 class SlurmrestdAvailableEvent(EventBase):
-    """Emmited when slurmrestd is available."""
+    """Emitted when slurmrestd is available."""
 
 
 class SlurmrestdUnAvailableEvent(EventBase):
-    """Emmited when the slurmrestd relation is broken."""
+    """Emitted when the slurmrestd relation is broken."""
 
 
 class SlurmrestdEvents(ObjectEvents):
