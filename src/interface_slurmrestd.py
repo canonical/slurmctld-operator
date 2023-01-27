@@ -37,12 +37,10 @@ class Slurmrestd(Object):
         self._relation_name = relation_name
 
         self.framework.observe(
-            self._charm.on[relation_name].relation_created,
-            self._on_relation_created
+            self._charm.on[relation_name].relation_created, self._on_relation_created
         )
         self.framework.observe(
-            self._charm.on[relation_name].relation_broken,
-            self._on_relation_broken
+            self._charm.on[relation_name].relation_broken, self._on_relation_broken
         )
 
     @property
